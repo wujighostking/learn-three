@@ -4,7 +4,7 @@ import { scene } from './init'
 const geometry = new IcosahedronGeometry(0.5, 3);
 const material = new MeshPhongMaterial({ color: 0xffffff });
 const amount = 10, count = amount ** 3
-const color = new Color()
+export const color = new Color()
 
 export const mesh = new InstancedMesh(geometry, material, count);
 

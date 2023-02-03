@@ -1,6 +1,6 @@
-import { Color, HemisphereLight, PerspectiveCamera, Raycaster, Scene, Vector2, WebGLRenderer } from 'three'
+import { Color, HemisphereLight, Intersection, Mesh, PerspectiveCamera, Raycaster, Scene, Vector2, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { mesh } from './raycase'
+import { mesh, color } from './raycase'
 import './style.css'
 
 const innerWidth: number = window.innerWidth
@@ -75,8 +75,8 @@ function initLight() {
 
 function onPointerMove(event: MouseEvent) {
   // 归一化
-  mouse.x = (event.clientX / window.innerWidth) / 2 + 1
-  mouse.y = -((event.clientY / window.innerHeight) / 2 + 1)
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -((event.clientY / window.innerHeight) * 2 - 1)
 }
 window.addEventListener('mousemove', onPointerMove)
 
@@ -86,8 +86,17 @@ function animate() {
   timer = requestAnimationFrame(animate)
 
   raycaster.setFromCamera(mouse, perspectiveCamera)
-  const intersectObject = raycaster.intersectObject(mesh)
-  console.log(intersectObject)
+  const intersectObject: Intersection[] = raycaster.intersectObject(mesh)
+  if (intersectObject.length > 0) {
+    const instanceId: number | undefined = intersectObject[0].instanceId
+    mesh.getColorAt(instanceId as number, color)
+    if (color.equals(new Color().setHex(0xffffff))) {
+      mesh.setColorAt(instanceId as number, color.setHex(Math.random() * 0xffffff));
+      if (mesh.instanceColor) {
+        mesh.instanceColor.needsUpdate = true
+      }
+    }
+  }
 
   controls.update()
   render()
