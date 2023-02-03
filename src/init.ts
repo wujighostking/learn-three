@@ -7,6 +7,7 @@ const innerWidth: number = window.innerWidth
 const innerHeight: number = window.innerHeight
 const mouse = new Vector2(2, 2)
 const raycaster = new Raycaster()
+const white = new Color().setHex(0xffffff)
 export let scene: Scene
 export let perspectiveCamera: PerspectiveCamera
 let webGLRenderer: WebGLRenderer
@@ -88,14 +89,22 @@ function animate() {
   raycaster.setFromCamera(mouse, perspectiveCamera)
   const intersectObject: Intersection[] = raycaster.intersectObject(mesh)
   if (intersectObject.length > 0) {
-    const instanceId: number | undefined = intersectObject[0].instanceId
-    mesh.getColorAt(instanceId as number, color)
-    if (color.equals(new Color().setHex(0xffffff))) {
-      mesh.setColorAt(instanceId as number, color.setHex(Math.random() * 0xffffff));
-      if (mesh.instanceColor) {
-        mesh.instanceColor.needsUpdate = true
-      }
+    // const instanceId: number | undefined = intersectObject[0].instanceId
+    // mesh.getColorAt(instanceId as number, color)
+    // if (color.equals(white)) {
+    //   mesh.setColorAt(instanceId as number, color.setHex(Math.random() * 0xffffff))
+    //   if (mesh.instanceColor) {
+    //     mesh.instanceColor.needsUpdate = true
+    //   }
+    // }
+
+    const instanceId: number = intersectObject[0].instanceId as number
+    mesh.getColorAt(instanceId, color)
+    if (color.equals(white)) {
+      mesh.setColorAt(instanceId, color.setHex(0xff0000))
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
     }
+
   }
 
   controls.update()
