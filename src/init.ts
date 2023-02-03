@@ -1,6 +1,6 @@
-import { Color, HemisphereLight, Intersection, Mesh, PerspectiveCamera, Raycaster, Scene, Vector2, WebGLRenderer } from 'three'
+import { Color, DirectionalLight, HemisphereLight, Intersection, Mesh, PerspectiveCamera, Raycaster, Scene, SpotLight, SpotLightHelper, Vector2, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { mesh, color } from './raycase'
+import { mesh, color } from './01.raycase'
 import './style.css'
 
 const innerWidth: number = window.innerWidth
@@ -25,6 +25,8 @@ function init() {
 function initRender(window: Window) {
   webGLRenderer = new WebGLRenderer()
   canvasElement = webGLRenderer.domElement
+  canvasElement.width = innerWidth
+  canvasElement.height = innerHeight
   document.body.appendChild(canvasElement)
   webGLRenderer.setSize(innerWidth, innerHeight)
 
@@ -58,6 +60,7 @@ function initCamera() {
 }
 
 function render() {
+  webGLRenderer.shadowMap.enabled = true
   webGLRenderer.render(scene, perspectiveCamera)
 }
 
@@ -69,9 +72,22 @@ function initLight() {
   // ambientLight =  new AmbientLight(0xffffff, 0.7)
   // scene.add(ambientLight)
 
-  const light = new HemisphereLight(0xffffff, 0x888888);
-  light.position.set(0, 1, 0);
-  scene.add(light);
+  // const light = new HemisphereLight(0xffffff, 0x888888);
+  const spotLight = new SpotLight(0xffffff);
+  // light.position.set(0, 1, 0)
+
+  spotLight.position.set(5, 30, 0)
+  spotLight.penumbra = 0.5
+  spotLight.decay = 0.5
+  spotLight.castShadow = true
+  // scene.add(light)
+  scene.add(spotLight)
+
+  const dirLight = new DirectionalLight(0xffffff, 0.7);
+  dirLight.position.set(30, 10, 0)
+  dirLight.castShadow = true
+  dirLight.shadow.camera.zoom = 2
+  scene.add(dirLight)
 }
 
 function onPointerMove(event: MouseEvent) {
@@ -86,26 +102,25 @@ function animate() {
   if (timer) cancelAnimationFrame(timer)
   timer = requestAnimationFrame(animate)
 
-  raycaster.setFromCamera(mouse, perspectiveCamera)
-  const intersectObject: Intersection[] = raycaster.intersectObject(mesh)
-  if (intersectObject.length > 0) {
-    // const instanceId: number | undefined = intersectObject[0].instanceId
-    // mesh.getColorAt(instanceId as number, color)
-    // if (color.equals(white)) {
-    //   mesh.setColorAt(instanceId as number, color.setHex(Math.random() * 0xffffff))
-    //   if (mesh.instanceColor) {
-    //     mesh.instanceColor.needsUpdate = true
-    //   }
-    // }
+  // raycaster.setFromCamera(mouse, perspectiveCamera)
+  // const intersectObject: Intersection[] = raycaster.intersectObject(mesh)
+  // if (intersectObject.length > 0) {
+  // const instanceId: number | undefined = intersectObject[0].instanceId
+  // mesh.getColorAt(instanceId as number, color)
+  // if (color.equals(white)) {
+  //   mesh.setColorAt(instanceId as number, color.setHex(Math.random() * 0xffffff))
+  //   if (mesh.instanceColor) {
+  //     mesh.instanceColor.needsUpdate = true
+  //   }
+  // }
 
-    const instanceId: number = intersectObject[0].instanceId as number
-    mesh.getColorAt(instanceId, color)
-    if (color.equals(white)) {
-      mesh.setColorAt(instanceId, color.setHex(0xff0000))
-      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
-    }
-
-  }
+  // const instanceId: number = intersectObject[0].instanceId as number
+  // mesh.getColorAt(instanceId, color)
+  // if (color.equals(white)) {
+  //   mesh.setColorAt(instanceId, color.setHex(0xff0000 * Math.random()))
+  //   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
+  // }
+  // }
 
   controls.update()
   render()
