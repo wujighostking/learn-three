@@ -4,50 +4,54 @@ import {
   DoubleSide,
   DynamicDrawUsage,
   InstancedMesh,
-  Matrix4,
   Mesh,
-  MeshLambertMaterial,
-  PlaneGeometry,
-  ShadowMaterial
-} from "three"
+  MeshBasicMaterial,
+  MeshLambertMaterial} from "three"
+import { OimoPhysics } from 'three/examples/jsm/physics/OimoPhysics.js'
 import { scene } from "./init"
 
-function createPlane() {
-  const planeGeometry = new PlaneGeometry(300, 300)
-  const materical = new ShadowMaterial({
-    color: 0xaeaeae,
+let floor: Mesh
+let meshes: InstancedMesh
+let physics
+// const position: Vector3 = new Vector3()
+
+function createFloor() {
+  // const planeGeometry = new PlaneGeometry(10, 5, 10)
+  const planeGeometry = new BoxGeometry(100, 0, 100)
+  const materical = new MeshBasicMaterial({
+    color: 0x111111,
     side: DoubleSide
   })
-  const planeMesh = new Mesh(planeGeometry, materical)
-  planeMesh.rotateX(Math.PI / 180 * (-90))
-  // planeMesh.castShadow = true
-  planeMesh.receiveShadow = true
-  scene.add(planeMesh)
+  floor = new Mesh(planeGeometry, materical)
+  // floor.rotateX((Math.PI / 180) * -90)
+  floor.receiveShadow = true
+  scene.add(floor)
 }
 
 function createCube() {
-  const count = 10
-  const boxGeometry = new BoxGeometry(3, 3, 3)
-  const materical = new MeshLambertMaterial({ color: 0xffffff * Math.random() })
-  const meshes = new InstancedMesh(boxGeometry, materical, count)
-  meshes.instanceMatrix.setUsage( DynamicDrawUsage )
+  const count = 100
+  const boxGeometry = new BoxGeometry(0.1, 0.1, 0.1)
+  const materical = new MeshLambertMaterial()
+  meshes = new InstancedMesh(boxGeometry, materical, count)
+  meshes.instanceMatrix.setUsage(DynamicDrawUsage)
   meshes.castShadow = true
   meshes.receiveShadow = true
-  const matrix = new Matrix4()
-  for (let i = 0; i < count; i++) {
-    matrix.setPosition(
-      (Math.random() * 2 - 1) * 10,
-      Math.random() * 2 * 10,
-      Math.random() * 10
-    )
-    meshes.setMatrixAt(i, matrix)
-  }
 
   scene.add(meshes)
 }
-createCube()
-createPlane()
 
+async function createPhysics() {
+  physics = await OimoPhysics()
+  physics.addMesh(floor)
+  physics.addMesh(meshes, 1)
+}
+createCube()
+createFloor()
+createPhysics()
 
 scene.add(new AxesHelper(30))
+
+
+
+
 

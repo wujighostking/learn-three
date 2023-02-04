@@ -1,13 +1,13 @@
-import { Color, DirectionalLight, HemisphereLight, Intersection, Mesh, PerspectiveCamera, Raycaster, Scene, SpotLight, SpotLightHelper, Vector2, WebGLRenderer } from 'three'
+import { Color, DirectionalLight, PerspectiveCamera, Scene, SpotLight, sRGBEncoding, Vector2, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { mesh, color } from './01.raycase'
+// import { mesh, color } from './01.raycase'
 import './style.css'
 
 const innerWidth: number = window.innerWidth
 const innerHeight: number = window.innerHeight
 const mouse = new Vector2(2, 2)
-const raycaster = new Raycaster()
-const white = new Color().setHex(0xffffff)
+// const raycaster = new Raycaster()
+// const white = new Color().setHex(0xffffff)
 export let scene: Scene
 export let perspectiveCamera: PerspectiveCamera
 let webGLRenderer: WebGLRenderer
@@ -23,7 +23,7 @@ function init() {
   initLight()
 }
 function initRender(window: Window) {
-  webGLRenderer = new WebGLRenderer()
+  webGLRenderer = new WebGLRenderer({ antialias: true })
   canvasElement = webGLRenderer.domElement
   canvasElement.width = innerWidth
   canvasElement.height = innerHeight
@@ -61,6 +61,7 @@ function initCamera() {
 
 function render() {
   webGLRenderer.shadowMap.enabled = true
+  webGLRenderer.outputEncoding = sRGBEncoding
   webGLRenderer.render(scene, perspectiveCamera)
 }
 
@@ -73,7 +74,7 @@ function initLight() {
   // scene.add(ambientLight)
 
   // const light = new HemisphereLight(0xffffff, 0x888888);
-  const spotLight = new SpotLight(0xffffff);
+  const spotLight = new SpotLight(0xffffff)
   // light.position.set(0, 1, 0)
 
   spotLight.position.set(5, 30, 0)
@@ -82,6 +83,7 @@ function initLight() {
   spotLight.castShadow = true
   // scene.add(light)
   scene.add(spotLight)
+  // scene.add(new SpotLightHelper(spotLight))
 
   const dirLight = new DirectionalLight(0xffffff, 0.7);
   dirLight.position.set(30, 10, 0)
