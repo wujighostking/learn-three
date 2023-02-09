@@ -1,4 +1,12 @@
-import { Color, DirectionalLight, PerspectiveCamera, Scene, SpotLight, sRGBEncoding, WebGLRenderer } from 'three'
+import {
+  Color,
+  DirectionalLight,
+  PerspectiveCamera,
+  Scene,
+  SpotLight,
+  sRGBEncoding,
+  WebGLRenderer,
+} from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
 
@@ -16,7 +24,7 @@ initRender(window)
 function init() {
   initScene()
   initCamera()
-  initLight()
+  // initLight()
 }
 function initRender(window: Window) {
   webGLRenderer = new WebGLRenderer({ antialias: true })
@@ -27,7 +35,6 @@ function initRender(window: Window) {
   webGLRenderer.setSize(innerWidth, innerHeight)
 
   initControls()
-
 
   window.addEventListener('resize', () => {
     const innerWidth = window.innerWidth
@@ -68,11 +75,9 @@ function initControls() {
 function initLight() {
   // ambientLight =  new AmbientLight(0xffffff, 0.7)
   // scene.add(ambientLight)
-
   // const light = new HemisphereLight(0xffffff, 0x888888);
   const spotLight = new SpotLight(0xffffff)
   // light.position.set(0, 1, 0)
-
   spotLight.position.set(5, 30, 0)
   spotLight.penumbra = 0.5
   spotLight.decay = 0.5
@@ -80,8 +85,7 @@ function initLight() {
   // scene.add(light)
   scene.add(spotLight)
   // scene.add(new SpotLightHelper(spotLight))
-
-  const dirLight = new DirectionalLight(0xffffff, 0.7);
+  const dirLight = new DirectionalLight(0xffffff, 0.7)
   dirLight.position.set(30, 10, 0)
   dirLight.castShadow = true
   dirLight.shadow.camera.zoom = 2
@@ -98,4 +102,4 @@ function animate() {
 }
 setTimeout(() => {
   animate()
-}, 500);
+}, 500)
