@@ -1,13 +1,9 @@
-import { Color, DirectionalLight, PerspectiveCamera, Scene, SpotLight, sRGBEncoding, Vector2, WebGLRenderer } from 'three'
+import { Color, DirectionalLight, PerspectiveCamera, Scene, SpotLight, sRGBEncoding, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-// import { mesh, color } from './01.raycase'
 import './style.css'
 
 const innerWidth: number = window.innerWidth
 const innerHeight: number = window.innerHeight
-const mouse = new Vector2(2, 2)
-// const raycaster = new Raycaster()
-// const white = new Color().setHex(0xffffff)
 export let scene: Scene
 export let perspectiveCamera: PerspectiveCamera
 let webGLRenderer: WebGLRenderer
@@ -92,37 +88,10 @@ function initLight() {
   scene.add(dirLight)
 }
 
-function onPointerMove(event: MouseEvent) {
-  // 归一化
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-  mouse.y = -((event.clientY / window.innerHeight) * 2 - 1)
-}
-window.addEventListener('mousemove', onPointerMove)
-
 let timer: number = 0
 function animate() {
   if (timer) cancelAnimationFrame(timer)
   timer = requestAnimationFrame(animate)
-
-  // raycaster.setFromCamera(mouse, perspectiveCamera)
-  // const intersectObject: Intersection[] = raycaster.intersectObject(mesh)
-  // if (intersectObject.length > 0) {
-  // const instanceId: number | undefined = intersectObject[0].instanceId
-  // mesh.getColorAt(instanceId as number, color)
-  // if (color.equals(white)) {
-  //   mesh.setColorAt(instanceId as number, color.setHex(Math.random() * 0xffffff))
-  //   if (mesh.instanceColor) {
-  //     mesh.instanceColor.needsUpdate = true
-  //   }
-  // }
-
-  // const instanceId: number = intersectObject[0].instanceId as number
-  // mesh.getColorAt(instanceId, color)
-  // if (color.equals(white)) {
-  //   mesh.setColorAt(instanceId, color.setHex(0xff0000 * Math.random()))
-  //   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
-  // }
-  // }
 
   controls.update()
   render()
