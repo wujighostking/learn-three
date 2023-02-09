@@ -6,8 +6,9 @@ import {
   InstancedMesh,
   Mesh,
   MeshBasicMaterial,
-  MeshLambertMaterial} from "three"
-import { OimoPhysics } from 'three/examples/jsm/physics/OimoPhysics.js'
+  MeshLambertMaterial
+} from "three"
+import { OimoPhysics } from 'three/examples/jsm/physics/OimoPhysics'
 import { scene } from "./init"
 
 let floor: Mesh
@@ -40,9 +41,17 @@ function createCube() {
   scene.add(meshes)
 }
 
+/**
+  import { Mesh, Vector3 } from '../../../src/Three'
+  interface IOimoPhysics {
+    addMesh(mesh: Mesh, mass: number): void;
+    setMeshPosition(mesh: Mesh, position: Vector3, index: number): void;
+  }
+  export function OimoPhysics(): Promise<IOimoPhysics>
+*/
 async function createPhysics() {
   physics = await OimoPhysics()
-  physics.addMesh(floor)
+  physics.addMesh(floor, 0)
   physics.addMesh(meshes, 1)
 }
 createCube()
