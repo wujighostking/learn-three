@@ -24,7 +24,7 @@ initRender(window)
 function init() {
   initScene()
   initCamera()
-  // initLight()
+  initLight()
 }
 function initRender(window: Window) {
   webGLRenderer = new WebGLRenderer({ antialias: true })
