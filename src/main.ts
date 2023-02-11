@@ -3,4 +3,5 @@
 // import './03.animation'
 // import './04.gltf'
 // import './05.littlestTokyo'
-import './06.glitchPass'
+// import './06.glitchPass'
+import './07.outlinePass'
