@@ -75,6 +75,7 @@ function render() {
 
 function initControls() {
   controls = new OrbitControls(perspectiveCamera, canvasElement)
+  controls.enableDamping = true
 }
 
 function initLight() {
