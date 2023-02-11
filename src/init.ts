@@ -10,13 +10,18 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
 
+interface IUseEffectObj {
+  value: boolean
+}
+
 const innerWidth: number = window.innerWidth
 const innerHeight: number = window.innerHeight
 export let scene: Scene
 export let perspectiveCamera: PerspectiveCamera
-let webGLRenderer: WebGLRenderer
+export let webGLRenderer: WebGLRenderer
 let canvasElement: HTMLCanvasElement
 let controls: OrbitControls
+export const useEffectObj: IUseEffectObj = { value: false }
 
 init()
 initRender(window)
@@ -33,6 +38,8 @@ function initRender(window: Window) {
   canvasElement.height = innerHeight
   document.body.appendChild(canvasElement)
   webGLRenderer.setSize(innerWidth, innerHeight)
+  webGLRenderer.shadowMap.enabled = true
+  webGLRenderer.outputEncoding = sRGBEncoding
 
   initControls()
 
@@ -63,9 +70,7 @@ function initCamera() {
 }
 
 function render() {
-  webGLRenderer.shadowMap.enabled = true
-  webGLRenderer.outputEncoding = sRGBEncoding
-  webGLRenderer.render(scene, perspectiveCamera)
+  !useEffectObj.value && webGLRenderer.render(scene, perspectiveCamera)
 }
 
 function initControls() {

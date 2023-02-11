@@ -2,4 +2,5 @@
 // import './02.physical'
 // import './03.animation'
 // import './04.gltf'
-import './05.littlestTokyo'
+// import './05.littlestTokyo'
+import './06.glitchPass'
