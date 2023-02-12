@@ -5,21 +5,22 @@ import {
   MeshBasicMaterial,
   PlaneGeometry,
   Scene,
+  AxesHelper,
 } from 'three'
 import {
-  CSS3DRenderer,
   CSS3DObject,
+  CSS3DRenderer,
 } from 'three/examples/jsm/renderers/CSS3DRenderer'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
+import { getUrl } from './utils/path'
 import { perspectiveCamera, scene } from './init'
 
+const width = 100
+const height = 100
+let css3dObject: CSS3DObject
 let css3dRenderer: CSS3DRenderer
-let scene2: Scene
 let controls: TrackballControls
-
-function createCss3dScene() {
-  scene2 = new Scene()
-}
+let scene2: Scene = new Scene()
 
 function createCss3dObject() {
   const material = new MeshBasicMaterial({
@@ -29,36 +30,36 @@ function createCss3dObject() {
     side: DoubleSide,
   })
 
-  const width = 100
-  const height = 100
   for (let i = 0; i < 10; i++) {
-    const divEle = document.createElement('div')
-    divEle.style.width = `${width}px`
-    divEle.style.height = `${height}px`
-    divEle.style.background = new Color(Math.random() * 0xffffff).getStyle()
+    const div: HTMLDivElement = document.createElement('div')
+    div.style.width = `${width}px`
+    div.style.height = `${height}px`
+    div.style.backgroundColor = new Color(Math.random() * 0xffffff).getStyle()
+    div.style.backgroundImage = `url(${getUrl(
+      'models/texture/tri_pattern.jpg'
+    )})`
+    div.style.opacity = String((1 + i) * 0.1)
 
-    divEle.style.opacity = (i < 5 ? 0.5 : 1) + ''
-    const object = new CSS3DObject(divEle)
-    object.position.set(
+    css3dObject = new CSS3DObject(div)
+    css3dObject.position.set(
       (Math.random() - 0.5) * 200,
       Math.random() * 200,
       (Math.random() - 0.5) * 200
     )
-    object.rotation.set(Math.random(), Math.random(), Math.random())
-    object.scale.x = Math.random() + 0.5
-    object.scale.y = Math.random() + 0.5
-    scene2.add(object)
+    css3dObject.rotation.set(Math.random(), Math.random(), Math.random())
+    css3dObject.scale.x = Math.random() + 0.5
+    css3dObject.scale.y = Math.random() + 0.5
+    scene2.add(css3dObject)
 
     const planeGeometry = new PlaneGeometry(width, height)
     const planeMesh = new Mesh(planeGeometry, material)
-    planeMesh.position.copy(object.position)
-    planeMesh.rotation.copy(object.rotation)
-    planeMesh.scale.copy(object.scale)
+    planeMesh.position.copy(css3dObject.position)
+    planeMesh.rotation.copy(css3dObject.rotation)
+    planeMesh.scale.copy(css3dObject.scale)
     scene.add(planeMesh)
   }
 }
-
-function createCss3dRender() {
+function createCss3dRenderer() {
   css3dRenderer = new CSS3DRenderer()
   css3dRenderer.setSize(window.innerWidth, window.innerHeight)
   css3dRenderer.domElement.style.position = 'absolute'
@@ -66,18 +67,19 @@ function createCss3dRender() {
   document.body.appendChild(css3dRenderer.domElement)
 }
 
-function craeteControls() {
+function createControls() {
   controls = new TrackballControls(perspectiveCamera, css3dRenderer.domElement)
 }
 
 function animate() {
-  controls?.update()
+  controls.update()
   css3dRenderer.render(scene2, perspectiveCamera)
   requestAnimationFrame(animate)
 }
 
-createCss3dScene()
 createCss3dObject()
-createCss3dRender()
-craeteControls()
+createCss3dRenderer()
+createControls()
 animate()
+
+scene.add(new AxesHelper(30))
