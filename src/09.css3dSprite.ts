@@ -1,13 +1,14 @@
-import { getUrl } from './utils/path'
 import {
   CSS3DRenderer,
   CSS3DSprite,
 } from 'three/examples/jsm/renderers/CSS3DRenderer'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
-import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
+import gsap from 'gsap'
+
+import { getUrl } from './utils/path'
 import { PerspectiveCamera, Scene } from 'three'
 
-const count: number = 125
+const count: number = 1000
 const cubic = Math.pow(count, 1 / 3)
 let css3dRenderer: CSS3DRenderer
 let scene: Scene
@@ -15,7 +16,6 @@ let perspectiveCamera: PerspectiveCamera
 let controls: TrackballControls
 let domRenderer: HTMLElement
 let objectList: CSS3DSprite[] = []
-let isCube: boolean = false
 
 function init() {
   scene = new Scene()
@@ -73,24 +73,88 @@ function animate() {
   requestAnimationFrame(animate)
 }
 
-function createPosition() {
-  if (!isCube) {
-    for (let x = 0; x < cubic; x++) {
-      for (let y = 0; y < cubic; y++) {
-        for (let z = 0; z < cubic; z++) {
-          const index = Math.ceil(z + y * cubic + x * cubic ** 2)
-          objectList[index].position.set(x * 100, y * 100, z * 100)
-        }
+let isUpdateComplete: boolean = true
+function createCubePosition() {
+  for (let x = 0; x < cubic; x++) {
+    for (let y = 0; y < cubic; y++) {
+      for (let z = 0; z < cubic; z++) {
+        const index = Math.ceil(z + y * cubic + x * cubic ** 2)
+        // objectList[index].position.set(x * 100, y * 100, z * 100)
+        gsap.to(objectList[index].position, {
+          'x': x * 100,
+          'y': y * 100,
+          'z': z * 100,
+          delay: 2,
+          duration: 3,
+          yoyo: true,
+          onComplete: () => {
+            if (Math.abs(x - cubic + 1) < 0.0001 && isUpdateComplete) {
+              createPlanePosition()
+              isUpdateComplete = false
+            }
+          }
+        })
+
       }
     }
-  } else {
-    objectList.forEach((object) => {
-      object.position.x = Math.random() * 2000 - 1000
-      object.position.y = Math.random() * 2000 - 1000
-      object.position.z = Math.random() * 2000 - 1000
-    })
   }
-  isCube = !isCube
+
+  // const objectPosition = {
+  //   x: 0, y: 0, z: 0
+  // }
+  // objectList.forEach((object, index) => {
+  //   const { x, y, z } = objectPosition
+  //   gsap.to(object.position, {
+  //     x: x * 100,
+  //     y: y * 100,
+  //     z: z * 100,
+  //     delay: 2,
+  //     duration: 3,
+  //     yoyo: true,
+  //     onComplete: () => {
+  //       if () {
+  //         createRandomPosition()
+  //       }
+  //     }
+  //   })
+
+  //   if ()
+  // })
+}
+
+function createRandomPosition() {
+  objectList.forEach((object, index) => {
+    gsap.to(object.position, {
+      'x': Math.random() * 2000 - 1000,
+      'y': Math.random() * 2000 - 1000,
+      'z': Math.random() * 2000 - 1000,
+      delay: 2,
+      duration: 5,
+      onComplete: () => {
+        if (Math.abs(index - objectList.length + 1) < 0.0001) {
+          createCubePosition()
+          isUpdateComplete = true
+        }
+      }
+    })
+  })
+}
+
+function createPlanePosition() {
+  objectList.forEach((object, index) => {
+    gsap.to(object.position, {
+      'x': Math.floor(index / 10) * 100,
+      'y': 100,
+      'z': (index % 10) * 100,
+      delay: 2,
+      duration: 5,
+      onComplete: () => {
+        if (Math.abs(index - objectList.length + 1) < 0.0001) {
+          createRandomPosition()
+        }
+      }
+    })
+  })
 }
 
 init()
@@ -98,9 +162,6 @@ createCss3dObject()
 createCss3dRender()
 initControls()
 animate()
+createCubePosition()
 
-setInterval(() => {
-  createPosition()
-}, 3000)
-
-export {}
+export { }
